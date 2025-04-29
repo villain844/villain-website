@@ -1,0 +1,209 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+  <meta charset="UTF-8" />
+  <title>Villain Host</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <style>
+    html, body {
+      margin: 0;
+      padding: 0;
+      background: black;
+      overflow: hidden;
+      font-family: Arial, sans-serif;
+    }
+    canvas {
+      position: fixed;
+      top: 0;
+      left: 0;
+      z-index: 0;
+    }
+    .vcard {
+      position: absolute;
+      top: 40%;
+      left: 50%;
+      transform: translate(-50%, -50%);
+      color: white;
+      text-align: center;
+      z-index: 2;
+    }
+    .vcard p {
+      font-size: 18px;
+      margin-bottom: 20px;
+    }
+    .button {
+      padding: 10px 30px;
+      border: 2px solid red;
+      background: transparent;
+      color: white;
+      font-size: 16px;
+      cursor: pointer;
+      border-radius: 8px;
+      box-shadow: 0 0 12px red;
+    }
+    .loading-container {
+      position: absolute;
+      top: 50%;
+      left: 50%;
+      transform: translate(-50%, -50%);
+      width: 80%;
+      height: 30px;
+      border: 2px solid red;
+      box-shadow: 0 0 15px red;
+      background: transparent;
+      z-index: 2;
+      display: none;
+    }
+    .loading-bar {
+      height: 100%;
+      width: 0%;
+      background: linear-gradient(to right, red, darkred, red);
+      animation: loading 30s linear forwards;
+    }
+    @keyframes loading {
+      0% { width: 0%; }
+      100% { width: 100%; }
+    }
+    .loading-text {
+      text-align: center;
+      color: red;
+      font-size: 20px;
+      margin-top: 15px;
+    }
+    .continue-card {
+      display: none;
+      text-align: center;
+      position: absolute;
+      top: 60%;
+      left: 50%;
+      transform: translate(-50%, -50%);
+      z-index: 3;
+    }
+    .background-after {
+      background: url('https://files.catbox.moe/ja69nh.jpg') no-repeat center center/cover;
+      position: fixed;
+      width: 100%;
+      height: 100%;
+      top: 0;
+      left: 0;
+      opacity: 0;
+      z-index: 1;
+      transition: opacity 2s ease;
+    }
+    .platform-section {
+      display: none;
+      position: absolute;
+      top: 65%;
+      left: 50%;
+      transform: translate(-50%, -50%);
+      text-align: center;
+      z-index: 4;
+    }
+    .platform-logo {
+      width: 100px;
+      height: 100px;
+      border-radius: 50%;
+      border: 3px solid red;
+      box-shadow: 0 0 15px red;
+      margin-bottom: 20px;
+    }
+    .platform-button {
+      display: block;
+      margin: 10px auto;
+      width: 250px;
+      padding: 12px;
+      font-size: 16px;
+      background: transparent;
+      color: white;
+      border: 2px solid red;
+      border-radius: 8px;
+      box-shadow: 0 0 12px red;
+      cursor: pointer;
+      text-decoration: none;
+    }
+  </style>
+</head>
+<body>
+
+<canvas id="matrixCanvas"></canvas>
+
+<div class="vcard" id="vcard">
+  <p>SELAMAT DATANG DI WEB ➩ 𓆩⟬villain host⟭𓆪</p>
+  <button class="button" onclick="startLoading()">Start</button>
+</div>
+
+<div class="loading-container" id="loadingContainer">
+  <div class="loading-bar" id="loadingBar"></div>
+</div>
+<div class="loading-text" id="loadingText">1%</div>
+
+<div class="continue-card" id="continueCard">
+  <button class="button" onclick="showWebsite()">Lanjutkan</button>
+</div>
+
+<div class="background-after" id="backgroundAfter"></div>
+
+<div class="platform-section" id="platformSection">
+  <img src="https://files.catbox.moe/inwuwp.png" alt="logo" class="platform-logo">
+  <a href="https://wa.me/6285134380708" class="platform-button">WhatsApp 1</a>
+  <a href="https://wa.me/6281246041489" class="platform-button">WhatsApp 2</a>
+  <a href="https://wa.me/6289505317821" class="platform-button">WhatsApp 3</a>
+  <a href="https://t.me/@VILLAINHOST" class="platform-button">Telegram</a>
+</div>
+
+<audio id="backgroundMusic" src="https://files.catbox.moe/crf7up.mp3" preload="auto"></audio>
+
+<script>
+const c = document.getElementById("matrixCanvas");
+const ctx = c.getContext("2d");
+c.height = window.innerHeight;
+c.width = window.innerWidth;
+
+let matrix = "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ123456789";
+matrix = matrix.split("");
+let font_size = 16;
+let columns = c.width / font_size;
+let drops = Array.from({ length: columns }, () => Math.random() * c.height);
+
+function draw() {
+  ctx.fillStyle = "rgba(0, 0, 0, 0.05)";
+  ctx.fillRect(0, 0, c.width, c.height);
+  ctx.fillStyle = "#0F0";
+  ctx.font = font_size + "px arial";
+  for (let i = 0; i < drops.length; i++) {
+    const text = matrix[Math.floor(Math.random() * matrix.length)];
+    ctx.fillText(text, i * font_size, drops[i] * font_size);
+    if (drops[i] * font_size > c.height && Math.random() > 0.975) drops[i] = 0;
+    drops[i]++;
+  }
+}
+setInterval(draw, 33);
+
+function startLoading() {
+  document.getElementById("vcard").style.display = "none";
+  document.getElementById("loadingContainer").style.display = "block";
+  document.getElementById("loadingText").style.display = "block";
+
+  let percent = 1;
+  const interval = setInterval(() => {
+    percent++;
+    document.getElementById("loadingText").textContent = percent + "%";
+    if (percent >= 100) {
+      clearInterval(interval);
+      document.getElementById("loadingContainer").style.display = "none";
+      document.getElementById("loadingText").style.display = "none";
+      document.getElementById("continueCard").style.display = "block";
+    }
+  }, 300);
+}
+
+function showWebsite() {
+  document.getElementById("backgroundAfter").style.opacity = 1;
+  document.getElementById("continueCard").style.display = "none";
+  document.getElementById("platformSection").style.display = "block";
+  document.getElementById("backgroundMusic").play();
+}
+</script>
+
+</body>
+</html>
